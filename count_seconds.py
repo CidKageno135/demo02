@@ -1,4 +1,4 @@
-# Chương trình đếm số giây trong 1 năm
+
 
 # Cách 1: Tính toán cơ bản
 seconds_per_minute = 60
