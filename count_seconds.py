@@ -1,40 +1,51 @@
+#!/usr/bin/env python3
+"""Simple utility to count seconds in a year.
+
+Usage examples:
+  python count_seconds.py            # shows seconds for common and leap year
+  python count_seconds.py --year 2024
+  python count_seconds.py --days 365
+"""
+
+import argparse
+import calendar
+
+SECS_PER_DAY = 24 * 60 * 60
 
 
-# Cách 1: Tính toán cơ bản
-seconds_per_minute = 60
-minutes_per_hour = 60
-hours_per_day = 24
-days_per_year = 365
+def seconds_in_days(days: int) -> int:
+    return days * SECS_PER_DAY
 
-total_seconds = seconds_per_minute * minutes_per_hour * hours_per_day * days_per_year
 
-print("=" * 50)
-print("CHƯƠNG TRÌNH ĐẾM GIÂY TRONG 1 NĂM")
-print("=" * 50)
-print(f"Giây trong 1 phút: {seconds_per_minute}")
-print(f"Phút trong 1 giờ: {minutes_per_hour}")
-print(f"Giờ trong 1 ngày: {hours_per_day}")
-print(f"Ngày trong 1 năm: {days_per_year}")
-print("-" * 50)
-print(f"Tổng giây trong 1 năm: {total_seconds:,}")
-print("=" * 50)
+def seconds_in_year(year: int) -> int:
+    days = 366 if calendar.isleap(year) else 365
+    return seconds_in_days(days)
 
-# Cách 2: Sử dụng thư viện datetime
-from datetime import datetime, timedelta
 
-year = 2024
-start_date = datetime(year, 1, 1)
-end_date = datetime(year, 12, 31)
+def main():
+    p = argparse.ArgumentParser(description="Count seconds in a year or given number of days.")
+    p.add_argument("--year", "-y", type=int, help="Specify a year (handles leap years)")
+    p.add_argument("--days", "-d", type=int, help="Specify number of days to count seconds for")
+    args = p.parse_args()
 
-diff = end_date - start_date
-seconds_in_leap_year = diff.total_seconds() + 86400  # Cộng 1 ngày cuối năm
+    if args.year:
+        secs = seconds_in_year(args.year)
+        print(f"Year {args.year}: {'leap year' if calendar.isleap(args.year) else 'common year'}")
+        print(f"Seconds: {secs:,}")
+        return
 
-print(f"\nCách tính cho năm nhuận ({year}):")
-print(f"Tổng giây: {int(seconds_in_leap_year):,}")
+    if args.days:
+        secs = seconds_in_days(args.days)
+        print(f"Days: {args.days}")
+        print(f"Seconds: {secs:,}")
+        return
 
-# Cách 3: Sử dụng timedelta
-one_year = timedelta(days=365)
-seconds_timedelta = one_year.total_seconds()
+    # Default: show both common and leap year values
+    common = seconds_in_days(365)
+    leap = seconds_in_days(366)
+    print("Seconds in a common year (365 days):", f"{common:,}")
+    print("Seconds in a leap year (366 days):", f"{leap:,}")
 
-print(f"\nSử dụng timedelta (365 ngày):")
-print(f"Tổng giây: {int(seconds_timedelta):,}")
+
+if __name__ == "__main__":
+    main()
